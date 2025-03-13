@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class ApiResponse {
+    private boolean success;
     private int statusCode;
     private String status;
     private String message;

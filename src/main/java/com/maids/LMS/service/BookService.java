@@ -4,14 +4,17 @@ import com.maids.LMS.dto.BookDto;
 import com.maids.LMS.util.ApiResponse;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 public interface BookService {
-    ResponseEntity<ApiResponse> getBooks(int page, int size);
 
-    ResponseEntity<ApiResponse> getBook(String id);
+    ApiResponse getBook(String id);
 
-    ResponseEntity<ApiResponse> addBook(BookDto bookDto);
+    ApiResponse addBook(BookDto bookDto);
 
-    ResponseEntity<ApiResponse> updateBook(String id, BookDto bookDto);
+    ApiResponse updateBook(String id, BookDto bookDto);
 
-    ResponseEntity<ApiResponse> deleteBook(String id);
+    ApiResponse deleteBook(String id);
+
+    ApiResponse getBooks(String title, String author, String category, String language, String publisher, String publicationYear, String borrowingCount, String status, String price, String maxPostponeCount, int page, int size);
 }
