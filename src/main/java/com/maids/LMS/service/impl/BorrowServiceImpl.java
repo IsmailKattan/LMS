@@ -11,6 +11,7 @@ import com.maids.LMS.service.BookService;
 import com.maids.LMS.service.BorrowService;
 import com.maids.LMS.service.PatronService;
 import com.maids.LMS.util.ApiResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -22,28 +23,34 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+
 public class BorrowServiceImpl implements BorrowService {
 
-    @Value("${LMS.borrowing.limit}")
+    @Value("${lms.borrowing.limit}")
     private int borrowingLimit;
 
-    @Value("${LMS.borrowing.duration}")
+    @Value("${lms.borrowing.duration}")
     private int borrowingDuration;
 
-    @Value("${LMS.borrowing.delay.fine.rate}")
+    @Value("${lms.borrowing.delay.rate}")
     private double delayFineRate;
 
-    @Value("${LMS.borrowing.delay.fine}")
+    @Value("${lms.borrowing.delay.fine}")
     private double delayFine;
 
-    @Autowired
-    private BookService bookService;
+    private final BookService bookService;
 
-    @Autowired
-    private PatronService patronService;
 
-    @Autowired
-    private BorrowingRecordRepository borrowingRecordRepository;
+    private final PatronService patronService;
+
+
+    private final BorrowingRecordRepository borrowingRecordRepository;
+
+    public BorrowServiceImpl(BookService bookService, PatronService patronService, BorrowingRecordRepository borrowingRecordRepository) {
+        this.bookService = bookService;
+        this.patronService = patronService;
+        this.borrowingRecordRepository = borrowingRecordRepository;
+    }
 
 
     @Transactional
@@ -166,7 +173,7 @@ public class BorrowServiceImpl implements BorrowService {
         List<BorrowingRecord> records = borrowingRecordRepository.findAll();
         // 2. check if the return date is after the borrow date
         for (BorrowingRecord record : records) {
-            if (record.getExtendedDate().isAfter(LocalDate.now())) {
+            if (record.getExtendedDate().isAfter(LocalDate.now()) && !record.isReturned()) {
                 if (record.getBorrowingPrice() > 0) {
                     // calculate how many days the book is borrowed
                     int days = record.getReturnDate().getDayOfYear() - record.getBorrowDate().getDayOfYear();
