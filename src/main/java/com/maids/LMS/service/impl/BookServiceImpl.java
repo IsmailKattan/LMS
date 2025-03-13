@@ -18,7 +18,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 @Service
@@ -163,7 +162,6 @@ public class BookServiceImpl implements BookService {
             int page,
             int size
     ) {
-        // split parameters to be list by comma and convert them to list in the type of them in the database
         List<String> titleList = title != null ? List.of(title.split(",")) : null;
         List<String> authorList = author != null ? List.of(author.split(",")) : null;
         List<String> categoryList = category != null ? List.of(category.split(",")) : null;

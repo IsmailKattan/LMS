@@ -5,13 +5,14 @@ import com.maids.LMS.util.ApiResponse;
 import org.springframework.http.ResponseEntity;
 
 public interface PatronService {
-    ResponseEntity<ApiResponse> getPatrons(String page, String size);
 
-    ResponseEntity<ApiResponse> getPatron(String id);
+    ApiResponse getPatron(String id);
 
-    ResponseEntity<ApiResponse> createPatron(PatronDto patronDto);
+    ApiResponse createPatron(PatronDto patronDto);
 
-    ResponseEntity<ApiResponse> updatePatron(String id, PatronDto patronDto);
+    ApiResponse updatePatron(String id, PatronDto patronDto);
 
-    ResponseEntity<ApiResponse> deletePatron(String id);
+    ApiResponse deletePatron(String id);
+
+    ApiResponse getPatrons(String username, String email, String phone, String name, String surname, int page, int size);
 }

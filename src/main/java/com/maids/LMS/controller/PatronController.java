@@ -17,27 +17,34 @@ public class PatronController {
     private PatronService patronService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse> getPatrons(@RequestParam(required = false) String page, @RequestParam(required = false) String size){
-        return patronService.getPatrons(page, size);
+    public ResponseEntity<ApiResponse> getPatrons(
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String phone,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String surname,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size){
+        return ResponseEntity.ok(patronService.getPatrons(username,email,phone,name,surname,page,size));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getPatron(@PathVariable String id){
-        return patronService.getPatron(id);
+        return ResponseEntity.ok(patronService.getPatron(id));
     }
 
     @PostMapping
     public ResponseEntity<ApiResponse> createPatron(@RequestBody PatronDto patronDto){
-        return patronService.createPatron(patronDto);
+        return ResponseEntity.status(201).body(patronService.createPatron(patronDto));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse> updatePatron(@PathVariable String id, @RequestBody PatronDto patronDto){
-        return patronService.updatePatron(id, patronDto);
+        return ResponseEntity.ok(patronService.updatePatron(id,patronDto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deletePatron(@PathVariable String id){
-        return patronService.deletePatron(id);
+        return ResponseEntity.ok(patronService.deletePatron(id));
     }
 }

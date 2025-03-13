@@ -8,12 +8,12 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PatronDto {
+public class PatronResponseDto {
+    private String id;
     private String username;
-    private String surname;
-    private String name;
     private String email;
-    private String password;
     @JsonProperty("phone-number")
     private String phoneNumber;
+    private String name;
+    private String surname;
 }
