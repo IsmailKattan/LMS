@@ -1,6 +1,7 @@
 package com.maids.LMS.service;
 
 import com.maids.LMS.dto.BookDto;
+import com.maids.LMS.model.Book;
 import com.maids.LMS.util.ApiResponse;
 import org.springframework.http.ResponseEntity;
 
@@ -17,4 +18,6 @@ public interface BookService {
     ApiResponse deleteBook(String id);
 
     ApiResponse getBooks(String title, String author, String category, String language, String publisher, String publicationYear, String borrowingCount, String status, String price, String maxPostponeCount, int page, int size);
+
+    Book getBookById(String bookId);
 }

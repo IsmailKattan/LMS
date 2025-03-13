@@ -19,11 +19,16 @@ public class BorrowRecordController {
 
     @PutMapping("/api/borrow/{bookId}/patron/{patronId}")
     public ResponseEntity<ApiResponse> borrowBook(@PathVariable String  bookId,@PathVariable String patronId) {
-        return borrowService.borrowBook(bookId, patronId);
+        return ResponseEntity.ok(borrowService.borrowBook(bookId,patronId));
     }
 
     @PutMapping("/api/return/{bookId}/patron/{patronId}")
     public ResponseEntity<ApiResponse> returnBook(@PathVariable String bookId,@PathVariable String patronId) {
-        return borrowService.returnBook(bookId, patronId);
+        return ResponseEntity.ok(borrowService.returnBook(bookId,patronId));
+    }
+
+    @PutMapping("/api/EOD")
+    public ResponseEntity<ApiResponse> endOfDay() {
+        return ResponseEntity.ok(borrowService.endOfDay());
     }
 }

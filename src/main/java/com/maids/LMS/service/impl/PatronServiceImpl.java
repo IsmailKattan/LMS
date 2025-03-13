@@ -87,6 +87,7 @@ public class PatronServiceImpl implements PatronService {
                 .phoneNumber(patronDto.getPhoneNumber())
                 .name(patronDto.getName())
                 .surname(patronDto.getSurname())
+                .borrowingRecords(new ArrayList<>())
                 .roles(List.of(Role.ROLE_PATRON))
                 .build();
         // save patron
@@ -289,5 +290,10 @@ public class PatronServiceImpl implements PatronService {
                 .success(!patrons.isEmpty())
                 .build();
 
+    }
+
+    @Override
+    public Patron getPatronById(String patronId) {
+        return patronRepository.findById(patronId).orElse(null);
     }
 }

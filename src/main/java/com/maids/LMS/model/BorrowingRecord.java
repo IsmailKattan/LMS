@@ -33,6 +33,9 @@ public class BorrowingRecord {
     @Field("is_returned")
     private boolean isReturned;
 
+    @Field("returned_date")
+    private LocalDate returnedDate;
+
     @Field("is_extended")
     private boolean isExtended;
 
