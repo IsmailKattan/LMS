@@ -1,8 +1,6 @@
-Sure! Here's your rewritten `README.md` file in proper Markdown syntax, ready to use:
 
----
 
-```md
+
 # 📚 Library Management System API
 
 This project is a **Spring Boot** based REST API for managing a library system. It allows patrons to register and log in, manage books, borrow and return books, and manage patron details.
