@@ -3,63 +3,77 @@
 
 # 📚 Library Management System API
 
-This project is a **Spring Boot** based REST API for managing a library system. It allows patrons to register and log in, manage books, borrow and return books, and manage patron details.
+A **Spring Boot** RESTful API to manage a Library system with MongoDB and Mongo Express using Docker Compose.
 
 ---
 
 ## 🚀 Getting Started
 
-### Prerequisites
+### ✅ Requirements
 
 - Java 17+
 - Docker & Docker Compose
 - Maven
 
-### 🔧 Setup
+---
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/your-username/library-api.git
-   cd library-api
-   ```
+## ⚙️ Setup
 
-2. **Start all services using Docker**
-   ```bash
-   docker compose up -d
-   ```
+### 1. Clone the repository
+```bash
+git clone https://github.com/your-username/library-api.git
+cd library-api
+```
 
-3. **Run the application**
-   ```bash
-   ./mvnw spring-boot:run
-   ```
+### 2. Start services with Docker Compose
+```bash
+docker compose up -d
+```
 
-> The API will be available at: `http://localhost:8080`
+This will launch:
+
+- MongoDB (`localhost:27017`)
+- Mongo Express (`http://localhost:8081`)
+
+> Mongo Express default credentials:
+> - **Username:** `admin`
+> - **Password:** `admin`
 
 ---
 
-## 📘 API Reference
+## ▶️ Running the Application
+
+```bash
+./mvnw spring-boot:run
+```
+
+Spring Boot app will run on:  
+`http://localhost:8080`
+
+---
+
+## 🌐 API Endpoints
 
 ### 🔐 AuthController `/auth`
 
 | Method | Endpoint     | Description         |
 |--------|--------------|---------------------|
 | POST   | `/register`  | Register a patron   |
-| POST   | `/login`     | Login for a patron  |
+| POST   | `/login`     | Patron login        |
 
 ---
 
 ### 📚 BookController `/api/books`
 
-| Method | Endpoint     | Description           |
-|--------|--------------|-----------------------|
-| GET    | `/`          | Get all books (with filters & pagination) |
-| GET    | `/{id}`      | Get a book by ID      |
-| POST   | `/`          | Add a new book        |
-| PUT    | `/{id}`      | Update a book by ID   |
-| DELETE | `/{id}`      | Delete a book by ID   |
+| Method | Endpoint     | Description                     |
+|--------|--------------|---------------------------------|
+| GET    | `/`          | Get all books (with filters)    |
+| GET    | `/{id}`      | Get book by ID                  |
+| POST   | `/`          | Add a new book                  |
+| PUT    | `/{id}`      | Update book by ID               |
+| DELETE | `/{id}`      | Delete book by ID               |
 
-**Filter Parameters (optional):**
-
+#### 🔍 Filters (Optional):
 - `title`
 - `author`
 - `category`
@@ -89,14 +103,13 @@ This project is a **Spring Boot** based REST API for managing a library system. 
 
 | Method | Endpoint     | Description            |
 |--------|--------------|------------------------|
-| GET    | `/`          | Get all patrons (with filters & pagination) |
-| GET    | `/{id}`      | Get a patron by ID     |
-| POST   | `/`          | Create a new patron    |
-| PUT    | `/{id}`      | Update a patron by ID  |
-| DELETE | `/{id}`      | Delete a patron by ID  |
+| GET    | `/`          | Get all patrons (with filters) |
+| GET    | `/{id}`      | Get patron by ID       |
+| POST   | `/`          | Create new patron      |
+| PUT    | `/{id}`      | Update patron by ID    |
+| DELETE | `/{id}`      | Delete patron by ID    |
 
-**Filter Parameters (optional):**
-
+#### 🔍 Filters (Optional):
 - `username`
 - `email`
 - `phone`
@@ -107,57 +120,99 @@ This project is a **Spring Boot** based REST API for managing a library system. 
 
 ---
 
-## 🛠 Technologies Used
+## 🐳 Docker Services
 
-- Spring Boot
-- Spring Web
-- Spring Security (optional)
-- Docker & Docker Compose
-- Java 17
-- Maven
+```yaml
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    ports:
+      - "0.0.0.0:27017:27017"
+    networks:
+      - Mongo
+    restart: unless-stopped
+    volumes:
+      - type: volume
+        source: MONGO_DATA
+        target: /data/db
+      - type: volume
+        source: MONGO_CONFIG
+        target: /data/configdb
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 
----
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: admin
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_BASICAUTH_PORT: "27017"
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin
+    ports:
+      - "0.0.0.0:8081:8081"
+    networks:
+      - Mongo
+    depends_on:
+      - mongo
+    restart: unless-stopped
+    command: sh -c "echo 'Waiting for MongoDB...'; while ! nc -z mongo 27017; do sleep 1; done; echo 'MongoDB is up!'; node app"
 
-## 📦 Project Structure
+networks:
+  Mongo:
+    name: mongo-network
 
+volumes:
+  MONGO_DATA:
+  MONGO_CONFIG:
 ```
-src/
-├── controller/
-│   ├── AuthController.java
-│   ├── BookController.java
-│   ├── BorrowRecordController.java
-│   └── PatronController.java
-├── service/
-├── dto/
-├── model/
-├── repository/
-└── ...
+
+---
+
+## ⚙️ Spring Configuration (`application.yml`)
+
+```yaml
+spring:
+  application:
+    name: LMS
+  data:
+    mongodb:
+      uri: mongodb://admin:admin@localhost:27017/lms?authSource=admin
+
+lms:
+  app:
+    jwt:
+      secret: [REDACTED]
+      expiration:
+        hours: 24
+
+  borrowing:
+    limit: 5
+    duration: 14
+    delay:
+      fine: 1
+      rate: 0.5
 ```
 
----
-
-## 🐳 Docker Overview
-
-Ensure your `docker-compose.yml` is set up with services like:
-
-- MongoDB (or other DB)
-- Backend (Spring Boot)
-
-Start containers with:
-
-```bash
-docker compose up -d
-```
+> 🔐 Use a proper secret generator to replace `[REDACTED]` in production.
 
 ---
 
-## 📝 Author
-
-**Ismail Kattan** – [@yourhandle](https://github.com/yourhandle)
 
 ---
 
-## 🏷 License
+## 📄 License
 
 This project is licensed under the MIT License.
+
+---
+
+## 🙋‍♂️ Author
+
+**Ismail kattan** – (https://github.com/IsmailKattan)
 ```
